@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Alphabet Pair Match! (Direct Mode)</title>
+    <title>Alphabet Pair Match! (Comic Sans & Dual Mic Mode)</title>
     <style>
         :root { --pink: #f8a5c2; --blue: #778beb; --bg: #fffbe6; --gold: #feca57; }
         body { font-family: 'Arial Rounded MT Bold', 'Helvetica', sans-serif; background-color: var(--bg); text-align: center; margin: 0; padding: 10px; overflow-x: hidden; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
@@ -18,16 +18,16 @@
         /* 遊戲核心互動區 */
         .game-main { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         
-        /* 調整 LISTEN 按鈕置底的樣式與間距 */
+        /* LISTEN 按鈕置底樣式 */
         .listen-btn { background: white; border: 3px solid #54a0ff; color: #54a0ff; border-radius: 30px; padding: 12px 50px; cursor: pointer; font-weight: bold; font-size: 24px; margin-top: 30px; -webkit-appearance: none; box-shadow: 0 4px 0 #e3f2fd; }
         .listen-btn:active { background: #54a0ff; color: white; transform: translateY(2px); box-shadow: none; }
 
         /* 中央大寫卡片提示 */
         .card-display { font-size: 95px; color: #ff9f43; font-weight: bold; background: #fff3e0; border: 5px dashed #ffb74d; display: inline-block; padding: 10px 50px; border-radius: 25px; margin: 10px 0; box-shadow: 0 8px 0 #ffe0b2; }
 
-        /* 核心小寫圓圈按鈕（粉紅、粉藍球球） */
+        /* 核心小寫圓圈按鈕（特別指定 Comic Sans MS 字體） */
         .choice-container { display: flex; justify-content: space-around; align-items: center; width: 100%; margin: 20px 0; }
-        .circle-btn { width: 160px; height: 160px; border-radius: 50%; border: none; font-size: 85px; font-weight: bold; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; box-shadow: 0 10px 0 rgba(0,0,0,0.1); -webkit-appearance: none; }
+        .circle-btn { width: 160px; height: 160px; border-radius: 50%; border: none; font-size: 95px; font-weight: bold; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; box-shadow: 0 10px 0 rgba(0,0,0,0.1); -webkit-appearance: none; font-family: 'Comic Sans MS', 'Chalkboard SE', 'Comic Sans', sans-serif; }
         .circle-btn.pink { background-color: var(--pink); }
         .circle-btn.blue { background-color: var(--blue); }
         .circle-btn:active { transform: translateY(6px); box-shadow: 0 4px 0 rgba(0,0,0,0.1); }
@@ -85,7 +85,6 @@
 </div>
 
 <script>
-    // 26組大小寫字母配對資料庫
     const alphabetPairs = [
         { U: "A", L: "a" }, { U: "B", L: "b" }, { U: "C", L: "c" }, { U: "D", L: "d" },
         { U: "E", L: "e" }, { U: "F", L: "f" }, { U: "G", L: "g" }, { U: "H", L: "h" },
@@ -98,7 +97,6 @@
 
     let currentIndex = 0, score = 0, mediaRecorder, audioChunks = [], audioUrl;
 
-    // 直接出題與換題邏輯
     function nextRound() {
         currentIndex = Math.floor(Math.random() * alphabetPairs.length);
         const currentPair = alphabetPairs[currentIndex];
@@ -121,7 +119,6 @@
         document.getElementById('star-display').classList.remove('victory-glow');
         updateStars();
         
-        // 進入新回合自動呼叫語音
         setTimeout(playSound, 300);
     }
 
@@ -152,7 +149,6 @@
         document.getElementById('star-display').innerText = "★".repeat(s) + "☆".repeat(5-s);
     }
 
-    // Final Fantasy 經典過關慶祝音樂
     function playVictoryMusic() {
         const ctx = new (window.AudioContext || window.webkitAudioContext)();
         const melody = [
@@ -176,13 +172,13 @@
         o.start(); o.stop(ctx.currentTime + 0.3);
     }
 
-    // iOS & Android 雙平台錄音格式自適應優化
+    // 🌟 iOS (Safari) & Android 錄音格式自動適應優化
     function initMediaRecorder(stream) {
         let options = { mimeType: 'audio/webm' };
         if (!MediaRecorder.isTypeSupported(options.mimeType)) {
-            options = { mimeType: 'audio/mp4' };
+            options = { mimeType: 'audio/mp4' }; // 優先相容 iOS 核心
             if (!MediaRecorder.isTypeSupported(options.mimeType)) {
-                options = {};
+                options = {}; 
             }
         }
         mediaRecorder = new MediaRecorder(stream, options);
@@ -196,10 +192,11 @@
 
     navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
         initMediaRecorder(stream);
-    }).catch(err => console.log("Mic initialized."));
+    }).catch(err => console.log("Mic access approved."));
 
+    // 🌟 移動端長按與滑動防禦機制，全面解鎖 iOS 錄音權限
     function startRec(e) { 
-        if(e) e.preventDefault();
+        if(e) e.preventDefault(); // 阻斷 iOS 放大鏡選單
         if (!mediaRecorder || mediaRecorder.state === "recording") return;
         audioChunks = []; 
         mediaRecorder.start(); 
@@ -219,7 +216,3 @@
 </script>
 </body>
 </html>
-
-  
-
-    
